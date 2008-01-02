@@ -4,7 +4,7 @@
 Summary: SELinux binary policy manipulation library 
 Name: libsemanage
 Version: 2.0.9
-Release: %mkrel 1
+Release: %mkrel 2
 License: GPL
 Group: System/Libraries
 URL:	http://www.selinuxproject.org
@@ -37,7 +37,6 @@ on binary policies such as customizing policy boolean settings.
 %package -n %{mklibname semanage 1}
 Summary: SELinux binary policy manipulation library
 Group: System/Libraries
-%py_requires -d
 
 %description -n %{mklibname semanage 1}
 libsemanage provides an API for the manipulation of SELinux binary policies.
@@ -67,6 +66,14 @@ Obsoletes: %{mklibname semanage 1 -d -s}
 The libsemanage-devel package contains the static libraries
 needed for developing applications that manipulate binary policies. 
 
+%package -n python-semanage
+Summary: Python bindings for %{name}
+Group: Development/Python
+%py_requires -d
+
+%description -n python-semanage
+This package contains python bindings for %{name}.
+
 %prep
 %setup -q
 
@@ -92,7 +99,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %config(noreplace) /etc/selinux/semanage.conf
 /%{_lib}/libsemanage.so.1
-%{_libdir}/python*/site-packages/*
 
 %files -n %{mklibname semanage -d}
 %defattr(-,root,root)
@@ -104,3 +110,7 @@ rm -rf %{buildroot}
 %files -n %{mklibname semanage -d -s}
 %defattr(-,root,root)
 %{_libdir}/libsemanage.a
+
+%files -n python-semanage
+%defattr(-,root,root)
+%{_libdir}/python*/site-packages/*
