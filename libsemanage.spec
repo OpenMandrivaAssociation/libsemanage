@@ -37,6 +37,7 @@ on binary policies such as customizing policy boolean settings.
 %package -n %{mklibname semanage 1}
 Summary: SELinux binary policy manipulation library
 Group: System/Libraries
+%py_requires -d
 
 %description -n %{mklibname semanage 1}
 libsemanage provides an API for the manipulation of SELinux binary policies.
@@ -68,14 +69,10 @@ needed for developing applications that manipulate binary policies.
 
 %prep
 %setup -q
-# sparc64 is an -fPIC arch, so we need to fix it here
-%ifarch sparc64
-sed -i 's/fpic/fPIC/g' src/Makefile
-%endif
 
 %build
 %{make} clean
-%{make} CFLAGS="%{optflags}"
+%{make} CFLAGS="-fPIC %{optflags}"
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
