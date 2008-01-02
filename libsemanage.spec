@@ -12,6 +12,7 @@ Source0: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz
 Source1: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz.sign
 #Provides: libsemanage.so
 BuildRequires: bison
+BuildRequires: flex
 BuildRequires: selinux-devel  >= %{libselinuxver}
 BuildRequires: sepol-devel >= %{libsepolver}
 BuildRequires: ustr-static-devel
