@@ -91,9 +91,13 @@ make DESTDIR="${RPM_BUILD_ROOT}" LIBDIR="${RPM_BUILD_ROOT}%{_libdir}" SHLIBDIR="
 %clean
 rm -rf %{buildroot}
 
+%if %mdkversion < 200900
 %post -n %{mklibname semanage 1} -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %postun -n %{mklibname semanage 1} -p /sbin/ldconfig
+%endif
 
 %files -n %{mklibname semanage 1}
 %defattr(-,root,root)
