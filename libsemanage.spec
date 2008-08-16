@@ -3,8 +3,8 @@
 
 Summary: SELinux binary policy manipulation library 
 Name: libsemanage
-Version: 2.0.9
-Release: %mkrel 4
+Version: 2.0.25
+Release: %mkrel 1
 License: GPL
 Group: System/Libraries
 URL:	http://www.selinuxproject.org
@@ -79,7 +79,7 @@ This package contains python bindings for %{name}.
 
 %build
 %{make} clean
-%{make} CFLAGS="-fPIC %{optflags}"
+%{make} CFLAGS="-fPIC %{optflags}" CC=gcc
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
