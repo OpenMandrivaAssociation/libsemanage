@@ -4,8 +4,8 @@
 Summary: SELinux binary policy manipulation library 
 Name: libsemanage
 Version: 2.0.27
-Release: %mkrel 1
-License: GPL
+Release: %mkrel 2
+License: GPLv2+
 Group: System/Libraries
 URL:	http://www.selinuxproject.org
 Source0: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz
@@ -38,6 +38,7 @@ on binary policies such as customizing policy boolean settings.
 %package -n %{mklibname semanage 1}
 Summary: SELinux binary policy manipulation library
 Group: System/Libraries
+Provides: semanage = %{version}-%{release}
 
 %description -n %{mklibname semanage 1}
 libsemanage provides an API for the manipulation of SELinux binary policies.
