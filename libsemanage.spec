@@ -3,13 +3,14 @@
 
 Summary: SELinux binary policy manipulation library 
 Name: libsemanage
-Version: 2.0.25
+Version: 2.0.27
 Release: %mkrel 1
 License: GPL
 Group: System/Libraries
 URL:	http://www.selinuxproject.org
 Source0: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz
-Source1: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz.sign
+#Source1: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz.sign
+Patch0: libsemanage-rhat.patch
 #Provides: libsemanage.so
 BuildRequires: bison
 BuildRequires: flex
@@ -76,6 +77,7 @@ This package contains python bindings for %{name}.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{make} clean
