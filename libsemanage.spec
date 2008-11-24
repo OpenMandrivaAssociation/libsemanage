@@ -3,8 +3,8 @@
 
 Summary: SELinux binary policy manipulation library 
 Name: libsemanage
-Version: 2.0.27
-Release: %mkrel 2
+Version: 2.0.28
+Release: %mkrel 1
 License: GPLv2+
 Group: System/Libraries
 URL:	http://www.selinuxproject.org
