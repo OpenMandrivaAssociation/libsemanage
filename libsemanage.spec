@@ -1,10 +1,10 @@
 %define libsepolver 2.0.11-1
 %define libselinuxver 2.0.0-1
 
-Summary: SELinux binary policy manipulation library 
+Summary: SELinux binary policy manipulation library
 Name: libsemanage
-Version: 2.0.29
-Release: %mkrel 2
+Version: 2.0.30
+Release: %mkrel 1
 License: GPLv2+
 Group: System/Libraries
 URL:	http://www.selinuxproject.org
@@ -55,7 +55,7 @@ Obsoletes: %{mklibname semanage 1 -d}
 
 %description -n %{mklibname semanage -d}
 The libsemanage-devel package contains the libraries and header files
-needed for developing applications that manipulate binary policies. 
+needed for developing applications that manipulate binary policies.
 
 %package -n %{mklibname semanage -d -s}
 Summary: Static libraries used to build policy manipulation tools
@@ -66,7 +66,7 @@ Obsoletes: %{mklibname semanage 1 -d -s}
 
 %description -n %{mklibname semanage -d -s}
 The libsemanage-devel package contains the static libraries
-needed for developing applications that manipulate binary policies. 
+needed for developing applications that manipulate binary policies.
 
 %package -n python-semanage
 Summary: Python bindings for %{name}
