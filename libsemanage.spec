@@ -17,7 +17,8 @@ BuildRequires: flex
 BuildRequires: selinux-devel  >= %{libselinuxver}
 BuildRequires: sepol-devel >= %{libsepolver}
 BuildRequires: ustr-static-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: bzip2-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-builroot
 
 %description
 Security-enhanced Linux is a feature of the Linux® kernel and a number
