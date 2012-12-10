@@ -122,3 +122,66 @@ rm -rf %{buildroot}
 %files -n python-semanage
 %defattr(-,root,root)
 %{_libdir}/python*/site-packages/*
+
+
+%changelog
+* Sat Nov 06 2010 Funda Wang <fwang@mandriva.org> 2.0.31-3mdv2011.0
++ Revision: 593901
+- rebuild for py2.7
+
+* Sun Sep 13 2009 Thierry Vignaud <tv@mandriva.org> 2.0.31-2mdv2010.0
++ Revision: 438738
+- rebuild
+
+* Fri Jan 23 2009 Jérôme Soyer <saispo@mandriva.org> 2.0.31-1mdv2009.1
++ Revision: 332745
+- New upstream release
+- New upstream release
+
+* Mon Jan 05 2009 Jérôme Soyer <saispo@mandriva.org> 2.0.30-1mdv2009.1
++ Revision: 325054
+- New upstream release
+
+* Sun Jan 04 2009 Funda Wang <fwang@mandriva.org> 2.0.29-2mdv2009.1
++ Revision: 324119
+- rebuild
+
+* Sun Nov 30 2008 David Walluck <walluck@mandriva.org> 2.0.29-1mdv2009.1
++ Revision: 308329
+- 2.0.29
+
+* Mon Nov 24 2008 David Walluck <walluck@mandriva.org> 2.0.28-1mdv2009.1
++ Revision: 306133
+- 2.0.28
+
+* Sun Aug 17 2008 David Walluck <walluck@mandriva.org> 2.0.27-2mdv2009.0
++ Revision: 273019
+- Provides: semanage = %%{version}-%%{release}
+
+* Sun Aug 17 2008 David Walluck <walluck@mandriva.org> 2.0.27-1mdv2009.0
++ Revision: 272849
+- 2.0.27
+
+* Sat Aug 16 2008 David Walluck <walluck@mandriva.org> 2.0.25-1mdv2009.0
++ Revision: 272747
+- 2.0.25
+
+* Sun Jul 27 2008 Thierry Vignaud <tv@mandriva.org> 2.0.9-4mdv2009.0
++ Revision: 250480
+- rebuild
+
+  + Pixel <pixel@mandriva.com>
+    - do not call ldconfig in %%post/%%postun, it is now handled by filetriggers
+
+* Wed Jan 02 2008 David Walluck <walluck@mandriva.org> 2.0.9-2mdv2008.1
++ Revision: 140336
+- add proper python package
+
+* Wed Jan 02 2008 David Walluck <walluck@mandriva.org> 2.0.9-1mdv2008.1
++ Revision: 140313
+- add python requires
+- BuildRequires: flex
+- BuildRequires: bison
+- import libsemanage
+
+
