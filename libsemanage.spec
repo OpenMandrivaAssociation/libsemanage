@@ -1,4 +1,4 @@
-%global with_python3 1
+%global with_python2 1
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print (get_python_lib(1))")}
 
 
@@ -26,11 +26,12 @@ BuildRequires:  pkgconfig(python2)
 BuildRequires: 	pkgconfig(bzip2)
 BuildRequires:  pkgconfig(audit)
 BuildRequires:	swig
+BuildRequires:  pkgconfig(python)
 
-%if 0%{?with_python3}
-BuildRequires:  python3
-BuildRequires:  pkgconfig(python3)
-%endif # if with_python3
+%if 0%{?with_python2}
+BuildRequires:  python2
+BuildRequires:  pkgconfig(python)
+%endif # if with_python2
 
 
 %description
@@ -85,6 +86,7 @@ needed for developing applications that manipulate binary policies.
 %package python
 Summary: 	semanage python bindings for %{name}
 Group: 		Development/Python
+Provides:	python-%{name} = %{EVRD}
 Requires:       semanage = %{version}-%{release}
 Requires:       libselinux-python
 Provides: 	semanage-python = %{version}-%{release}
@@ -95,22 +97,23 @@ Obsoletes:	python-semanage
 %description python
 This package contains python bindings for %{name}.
 
-%if 0%{?with_python3}
-%package python3
+%if 0%{?with_python2}
+%package python2
 Summary: 	Python bindings for %{name}
 Group: 		Development/Python
 Requires:       semanage = %{version}-%{release}
-Requires:       libselinux-python3
-Provides: 	semanage-python3 = %{version}-%{release}
+Requires:       libselinux-python2
+Provides: 	semanage-python2 = %{version}-%{release}
+Provides:	python2-%{name} = %{EVRD}
 ## This line could be removed before the release of mga6
 ## It's needed to remove wrongly name packages
-Obsoletes:	python3-semanage
+Obsoletes:	python2-semanage
 
 
-%description python3
+%description python2
 The libsemanage-python3 package contains the python 3 bindings for developing
 SELinux management applications.
-%endif # if with_python3
+%endif # if with_python2
 
 %prep
 %setup -q
@@ -140,10 +143,10 @@ make clean
 BuildPythonWrapper \
   %{__python2}
   
-%if 0%{?with_python3}
+%if 0%{?with_python2}
 BuildPythonWrapper \
   %{__python3}
-%endif # with_python3
+%endif # with_python2
 
 %install
 InstallPythonWrapper() {
@@ -164,14 +167,14 @@ mkdir -p %{buildroot}%{buildroot}%{_sharedstatedir}/selinux/tmp
 make DESTDIR="%{buildroot}" LIBDIR="%{_libdir}" SHLIBDIR="%{_libdir}" install
 
 InstallPythonWrapper \
-  %{__python2} \
+  %{__python} \
   .so
 
-%if 0%{?with_python3}
+%if 0%{?with_python2}
 InstallPythonWrapper \
-  %{__python3} \
-  $(python3-config --extension-suffix)
-%endif # with_python3
+  %{__python2} \
+  $(python2-config --extension-suffix)
+%endif # with_python2
   
 cp %{SOURCE1} %{buildroot}/etc/selinux/semanage.conf
 ln -sf  %{_libdir}/libsemanage.so.1 %{buildroot}/%{_libdir}/libsemanage.so
@@ -191,15 +194,14 @@ ln -sf  %{_libdir}/libsemanage.so.1 %{buildroot}/%{_libdir}/libsemanage.so
 %{_mandir}/man5/*
 %{_mandir}/ru/man5/semanage.conf.*
 
-
 %files  python
+%{python_sitearch}/*.so
+%{python_sitearch}/semanage.py*
+%{python_sitearch}/__pycache__/semanage*
+%{_libexecdir}/selinux/semanage_migrate_store
+
+%if 0%{?with_python2}
+%files  python2
 %{python2_sitearch}/_semanage.so
 %{python2_sitearch}/semanage.py*
-
-%if 0%{?with_python3}
-%files  python3
-%{python3_sitearch}/*.so
-%{python3_sitearch}/semanage.py*
-%{python3_sitearch}/__pycache__/semanage*
-%{_libexecdir}/selinux/semanage_migrate_store
-%endif # if with_python3
+%endif # if with_python2
