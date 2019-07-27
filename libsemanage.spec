@@ -1,24 +1,37 @@
-%define libsepolver 2.0.11-1
-%define libselinuxver 2.0.0-1
+%global with_python3 1
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print (get_python_lib(1))")}
 
-Summary: SELinux binary policy manipulation library
-Name: libsemanage
-Version: 2.0.31
-Release: 4
-License: GPLv2+
-Group: System/Libraries
-URL:	http://www.selinuxproject.org
-Source0: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz
-#Source1: http://www.nsa.gov/selinux/archives/libsemanage-%{version}.tgz.sign
-Patch0: libsemanage-rhat.patch
-#Provides: libsemanage.so
-BuildRequires: bison
-BuildRequires: flex
-BuildRequires: selinux-devel  >= %{libselinuxver}
-BuildRequires: sepol-devel >= %{libsepolver}
-BuildRequires: ustr-static-devel
-BuildRequires: bzip2-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-builroot
+
+
+%define libsepolver %{version}
+%define libselinuxver %{version}
+
+
+Summary: 	SELinux binary policy manipulation library
+Name: 		libsemanage
+Version: 	2.9
+Release: 	1
+License: 	GPLv2+
+Group: 		System/Libraries
+URL:		http://www.selinuxproject.org
+Source0:	https://github.com/SELinuxProject/selinux/releases/download/20190315/libsemanage-%{version}.tar.gz
+Source1: 	semanage.conf
+Patch1:         libsemanage-fedora.patch
+BuildRequires: 	bison
+BuildRequires: 	flex
+BuildRequires: 	pkgconfig(libselinux)  >= %{libselinuxver}
+BuildRequires: 	pkgconfig(libsepol) >= %{libsepolver}
+BuildRequires: 	pkgconfig(ustr)
+BuildRequires:  pkgconfig(python2)
+BuildRequires: 	pkgconfig(bzip2)
+BuildRequires:  pkgconfig(audit)
+BuildRequires:	swig
+
+%if 0%{?with_python3}
+BuildRequires:  python3
+BuildRequires:  pkgconfig(python3)
+%endif # if with_python3
+
 
 %description
 Security-enhanced Linux is a feature of the Linux® kernel and a number
@@ -37,9 +50,9 @@ as by programs like load_policy that need to perform specific transformations
 on binary policies such as customizing policy boolean settings.
 
 %package -n %{mklibname semanage 1}
-Summary: SELinux binary policy manipulation library
-Group: System/Libraries
-Provides: semanage = %{version}-%{release}
+Summary: 	SELinux binary policy manipulation library
+Group: 		System/Libraries
+Provides: 	semanage = %{version}-%{release}
 
 %description -n %{mklibname semanage 1}
 libsemanage provides an API for the manipulation of SELinux binary policies.
@@ -48,140 +61,145 @@ as by programs like load_policy that need to perform specific transformations
 on binary policies such as customizing policy boolean settings.
 
 %package -n %{mklibname semanage -d}
-Summary: Header files and libraries used to build policy manipulation tools
-Group: Development/C
-Requires: %{mklibname semanage 1} = %{version}-%{release}
-Provides: semanage-devel = %{version}-%{release}
-Obsoletes: %{mklibname semanage 1 -d}
+Summary: 	Header files and libraries used to build policy manipulation tools
+Group: 		Development/C
+Requires: 	%{mklibname semanage 1} = %{version}-%{release}
+Provides: 	semanage-devel = %{version}-%{release}
+Obsoletes: 	%{mklibname semanage 1 -d}
 
 %description -n %{mklibname semanage -d}
 The libsemanage-devel package contains the libraries and header files
 needed for developing applications that manipulate binary policies.
 
 %package -n %{mklibname semanage -d -s}
-Summary: Static libraries used to build policy manipulation tools
-Group: Development/C
-Requires: %{mklibname semanage -d} = %{version}-%{release}
-Provides: semanage-static-devel = %{version}-%{release}
-Obsoletes: %{mklibname semanage 1 -d -s}
+Summary: 	Static libraries used to build policy manipulation tools
+Group: 		Development/C
+Requires: 	%{mklibname semanage -d} = %{version}-%{release}
+Provides: 	semanage-static-devel = %{version}-%{release}
+Obsoletes: 	%{mklibname semanage 1 -d -s}
 
 %description -n %{mklibname semanage -d -s}
 The libsemanage-devel package contains the static libraries
 needed for developing applications that manipulate binary policies.
 
-%package -n python-semanage
-Summary: Python bindings for %{name}
-Group: Development/Python
-%py_requires -d
+%package python
+Summary: 	semanage python bindings for %{name}
+Group: 		Development/Python
+Requires:       semanage = %{version}-%{release}
+Requires:       libselinux-python
+Provides: 	semanage-python = %{version}-%{release}
+## This line could be removed before the release of mga6
+## It's needed to remove wrongly name packages
+Obsoletes:	python-semanage
 
-%description -n python-semanage
+%description python
 This package contains python bindings for %{name}.
+
+%if 0%{?with_python3}
+%package python3
+Summary: 	Python bindings for %{name}
+Group: 		Development/Python
+Requires:       semanage = %{version}-%{release}
+Requires:       libselinux-python3
+Provides: 	semanage-python3 = %{version}-%{release}
+## This line could be removed before the release of mga6
+## It's needed to remove wrongly name packages
+Obsoletes:	python3-semanage
+
+
+%description python3
+The libsemanage-python3 package contains the python 3 bindings for developing
+SELinux management applications.
+%endif # if with_python3
 
 %prep
 %setup -q
-%patch0 -p1
+%autopatch -p1
 
 %build
-%{make} clean
-%{make} CFLAGS="-fPIC %{optflags}" CC=gcc
+export LDFLAGS="%{ldflags}"
+
+# To support building the Python wrapper against multiple Python runtimes
+# Define a function, for how to perform a "build" of the python wrapper against
+# a specific runtime:
+BuildPythonWrapper() {
+  BinaryName=$1
+
+  # Perform the build from the upstream Makefile:
+  make \
+    CC=%{__cc} \
+    PYTHON=$BinaryName \
+    CFLAGS="%{optflags}" LIBDIR="%{_libdir}" SHLIBDIR="%{_lib}" \
+    pywrap
+}
+
+make clean
+%make_build CC=%{__cc} CFLAGS="%{optflags}" swigify
+%make_build CC=%{__cc} CFLAGS="%{optflags}" LIBDIR="%{_libdir}" SHLIBDIR="%{_lib}" all
+
+BuildPythonWrapper \
+  %{__python2}
+  
+%if 0%{?with_python3}
+BuildPythonWrapper \
+  %{__python3}
+%endif # with_python3
 
 %install
-rm -rf ${RPM_BUILD_ROOT}
-mkdir -p ${RPM_BUILD_ROOT}/%{_lib}
-mkdir -p ${RPM_BUILD_ROOT}/%{_libdir}
-mkdir -p ${RPM_BUILD_ROOT}%{_includedir}
-make DESTDIR="${RPM_BUILD_ROOT}" LIBDIR="${RPM_BUILD_ROOT}%{_libdir}" SHLIBDIR="${RPM_BUILD_ROOT}/%{_lib}" install install-pywrap
+InstallPythonWrapper() {
+  BinaryName=$1
 
-%clean
+  make \
+    CC=%{__cc} \
+    PYTHON=$BinaryName \
+    DESTDIR="%{buildroot}" LIBDIR="%{buildroot}%{_libdir}" SHLIBDIR="%{buildroot}%{_libdir}" \
+    install-pywrap
+}
+
 rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_libdir}
+mkdir -p %{buildroot}%{_includedir}
+mkdir -p %{buildroot}%{buildroot}%{_sharedstatedir}/selinux
+mkdir -p %{buildroot}%{buildroot}%{_sharedstatedir}/selinux/tmp
+make DESTDIR="%{buildroot}" LIBDIR="%{_libdir}" SHLIBDIR="%{_libdir}" install
 
-%if %mdkversion < 200900
-%post -n %{mklibname semanage 1} -p /sbin/ldconfig
-%endif
+InstallPythonWrapper \
+  %{__python2} \
+  .so
 
-%if %mdkversion < 200900
-%postun -n %{mklibname semanage 1} -p /sbin/ldconfig
-%endif
+%if 0%{?with_python3}
+InstallPythonWrapper \
+  %{__python3} \
+  $(python3-config --extension-suffix)
+%endif # with_python3
+  
+cp %{SOURCE1} %{buildroot}/etc/selinux/semanage.conf
+ln -sf  %{_libdir}/libsemanage.so.1 %{buildroot}/%{_libdir}/libsemanage.so
 
 %files -n %{mklibname semanage 1}
-%defattr(-,root,root)
 %config(noreplace) /etc/selinux/semanage.conf
-/%{_lib}/libsemanage.so.1
-
-%files -n %{mklibname semanage -d}
-%defattr(-,root,root)
-%{_libdir}/libsemanage.so
-%dir %{_includedir}/semanage
-%{_includedir}/semanage/*.h
-%{_mandir}/man3/*
+%{_libdir}/libsemanage.so.1
 
 %files -n %{mklibname semanage -d -s}
-%defattr(-,root,root)
 %{_libdir}/libsemanage.a
 
-%files -n python-semanage
-%defattr(-,root,root)
-%{_libdir}/python*/site-packages/*
+%files -n %{mklibname semanage -d}
+%{_libdir}/libsemanage.so
+%{_libdir}/pkgconfig/libsemanage.pc
+%{_includedir}/semanage
+%{_mandir}/man3/*
+%{_mandir}/man5/*
+%{_mandir}/ru/man5/semanage.conf.*
 
 
-%changelog
-* Sat Nov 06 2010 Funda Wang <fwang@mandriva.org> 2.0.31-3mdv2011.0
-+ Revision: 593901
-- rebuild for py2.7
+%files  python
+%{python2_sitearch}/_semanage.so
+%{python2_sitearch}/semanage.py*
 
-* Sun Sep 13 2009 Thierry Vignaud <tv@mandriva.org> 2.0.31-2mdv2010.0
-+ Revision: 438738
-- rebuild
-
-* Fri Jan 23 2009 Jérôme Soyer <saispo@mandriva.org> 2.0.31-1mdv2009.1
-+ Revision: 332745
-- New upstream release
-- New upstream release
-
-* Mon Jan 05 2009 Jérôme Soyer <saispo@mandriva.org> 2.0.30-1mdv2009.1
-+ Revision: 325054
-- New upstream release
-
-* Sun Jan 04 2009 Funda Wang <fwang@mandriva.org> 2.0.29-2mdv2009.1
-+ Revision: 324119
-- rebuild
-
-* Sun Nov 30 2008 David Walluck <walluck@mandriva.org> 2.0.29-1mdv2009.1
-+ Revision: 308329
-- 2.0.29
-
-* Mon Nov 24 2008 David Walluck <walluck@mandriva.org> 2.0.28-1mdv2009.1
-+ Revision: 306133
-- 2.0.28
-
-* Sun Aug 17 2008 David Walluck <walluck@mandriva.org> 2.0.27-2mdv2009.0
-+ Revision: 273019
-- Provides: semanage = %%{version}-%%{release}
-
-* Sun Aug 17 2008 David Walluck <walluck@mandriva.org> 2.0.27-1mdv2009.0
-+ Revision: 272849
-- 2.0.27
-
-* Sat Aug 16 2008 David Walluck <walluck@mandriva.org> 2.0.25-1mdv2009.0
-+ Revision: 272747
-- 2.0.25
-
-* Sun Jul 27 2008 Thierry Vignaud <tv@mandriva.org> 2.0.9-4mdv2009.0
-+ Revision: 250480
-- rebuild
-
-  + Pixel <pixel@mandriva.com>
-    - do not call ldconfig in %%post/%%postun, it is now handled by filetriggers
-
-* Wed Jan 02 2008 David Walluck <walluck@mandriva.org> 2.0.9-2mdv2008.1
-+ Revision: 140336
-- add proper python package
-
-* Wed Jan 02 2008 David Walluck <walluck@mandriva.org> 2.0.9-1mdv2008.1
-+ Revision: 140313
-- add python requires
-- BuildRequires: flex
-- BuildRequires: bison
-- import libsemanage
-
-
+%if 0%{?with_python3}
+%files  python3
+%{python3_sitearch}/*.so
+%{python3_sitearch}/semanage.py*
+%{python3_sitearch}/__pycache__/semanage*
+%{_libexecdir}/selinux/semanage_migrate_store
+%endif # if with_python3
