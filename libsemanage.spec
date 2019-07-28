@@ -11,6 +11,7 @@ Summary: 	SELinux binary policy manipulation library
 Name: 		libsemanage
 Version: 	2.9
 Release: 	1
+Epoch:		1
 License: 	GPLv2+
 Group: 		System/Libraries
 URL:		http://www.selinuxproject.org
@@ -22,7 +23,7 @@ BuildRequires: 	flex
 BuildRequires: 	pkgconfig(libselinux)  >= %{libselinuxver}
 BuildRequires: 	pkgconfig(libsepol) >= %{libsepolver}
 BuildRequires: 	pkgconfig(ustr)
-BuildRequires:  pkgconfig(python2)
+BuildRequires:  pkgconfig(python)
 BuildRequires: 	pkgconfig(bzip2)
 BuildRequires:  pkgconfig(audit)
 BuildRequires:	swig
@@ -53,7 +54,7 @@ on binary policies such as customizing policy boolean settings.
 %package -n %{mklibname semanage 1}
 Summary: 	SELinux binary policy manipulation library
 Group: 		System/Libraries
-Provides: 	semanage = %{version}-%{release}
+Provides: 	semanage = %{EVRD}
 
 %description -n %{mklibname semanage 1}
 libsemanage provides an API for the manipulation of SELinux binary policies.
@@ -64,8 +65,8 @@ on binary policies such as customizing policy boolean settings.
 %package -n %{mklibname semanage -d}
 Summary: 	Header files and libraries used to build policy manipulation tools
 Group: 		Development/C
-Requires: 	%{mklibname semanage 1} = %{version}-%{release}
-Provides: 	semanage-devel = %{version}-%{release}
+Requires: 	%{mklibname semanage 1} = %{EVRD}
+Provides: 	semanage-devel = %{EVRD}
 Obsoletes: 	%{mklibname semanage 1 -d}
 
 %description -n %{mklibname semanage -d}
@@ -75,8 +76,8 @@ needed for developing applications that manipulate binary policies.
 %package -n %{mklibname semanage -d -s}
 Summary: 	Static libraries used to build policy manipulation tools
 Group: 		Development/C
-Requires: 	%{mklibname semanage -d} = %{version}-%{release}
-Provides: 	semanage-static-devel = %{version}-%{release}
+Requires: 	%{mklibname semanage -d} = %{EVRD}
+Provides: 	semanage-static-devel = %{EVRD}
 Obsoletes: 	%{mklibname semanage 1 -d -s}
 
 %description -n %{mklibname semanage -d -s}
@@ -87,9 +88,9 @@ needed for developing applications that manipulate binary policies.
 Summary: 	semanage python bindings for %{name}
 Group: 		Development/Python
 Provides:	python-%{name} = %{EVRD}
-Requires:       semanage = %{version}-%{release}
+Requires:       semanage = %{EVRD}
 Requires:       libselinux-python
-Provides: 	semanage-python = %{version}-%{release}
+Provides: 	semanage-python = %{EVRD}
 ## This line could be removed before the release of mga6
 ## It's needed to remove wrongly name packages
 Obsoletes:	python-semanage
@@ -101,9 +102,9 @@ This package contains python bindings for %{name}.
 %package python2
 Summary: 	Python bindings for %{name}
 Group: 		Development/Python
-Requires:       semanage = %{version}-%{release}
+Requires:       semanage = %{EVRD}
 Requires:       libselinux-python2
-Provides: 	semanage-python2 = %{version}-%{release}
+Provides: 	semanage-python2 = %{EVRD}
 Provides:	python2-%{name} = %{EVRD}
 ## This line could be removed before the release of mga6
 ## It's needed to remove wrongly name packages
