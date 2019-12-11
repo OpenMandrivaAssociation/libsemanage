@@ -10,7 +10,7 @@
 Summary: 	SELinux binary policy manipulation library
 Name: 		libsemanage
 Version: 	2.9
-Release: 	1
+Release: 	2
 Epoch:		1
 License: 	GPLv2+
 Group: 		System/Libraries
