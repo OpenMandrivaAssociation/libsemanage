@@ -75,18 +75,15 @@ Provides: 	semanage-static-devel = %{EVRD}
 The libsemanage-devel package contains the static libraries
 needed for developing applications that manipulate binary policies.
 
-%package python
+%package -n python-semanage
 Summary: 	semanage python bindings for %{name}
 Group: 		Development/Python
 Provides:	python-%{name} = %{EVRD}
 Requires:       semanage = %{EVRD}
-Requires:       libselinux-python
-Provides: 	semanage-python = %{EVRD}
-## This line could be removed before the release of mga6
-## It's needed to remove wrongly name packages
-Obsoletes:	python-semanage
+Requires:       python%{pyver}dist(selinux)
+%rename %{name}-python
 
-%description python
+%description -n python-semanage
 This package contains python bindings for %{name}.
 
 %prep
@@ -156,7 +153,7 @@ cp %{SOURCE1} %{buildroot}/etc/selinux/semanage.conf
 %{_mandir}/man5/*
 %lang(ru) %{_mandir}/ru/man5/semanage.conf.*
 
-%files  python
+%files -n python-semanage
 %{python_sitearch}/*.so
 %{python_sitearch}/semanage.py*
 %{_libexecdir}/selinux/semanage_migrate_store
