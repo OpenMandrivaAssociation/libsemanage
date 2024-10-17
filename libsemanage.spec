@@ -15,7 +15,7 @@ Release: 	1
 Epoch:		1
 License: 	GPLv2+
 Group: 		System/Libraries
-URL:		http://www.selinuxproject.org
+URL:		https://www.selinuxproject.org
 Source0:	https://github.com/SELinuxProject/selinux/releases/download/%{version}/libsemanage-%{version}.tar.gz
 Source1: 	semanage.conf
 BuildRequires: 	bison
