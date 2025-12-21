@@ -18,6 +18,7 @@ Group: 		System/Libraries
 URL:		https://www.selinuxproject.org
 Source0:	https://github.com/SELinuxProject/selinux/releases/download/%{version}/libsemanage-%{version}.tar.gz
 Source1: 	semanage.conf
+BuildRequires:	make
 BuildRequires: 	bison
 BuildRequires: 	flex
 BuildRequires: 	pkgconfig(libselinux)  >= %{libselinuxver}
